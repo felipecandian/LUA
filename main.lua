@@ -1,5 +1,6 @@
 LARGURA_TELA = 320
 ALTURA_TELA = 480
+MAX_METEOROS = 10
 
 aviao_14bis = {
   src = "imagens/14bis.png",
@@ -11,17 +12,28 @@ aviao_14bis = {
 
 meteoros = {}
 
+function removeMeteoros()
+  for i = #meteoros, 1, -1 do
+    if meteoros[i].y > ALTURA_TELA then
+      table.remove(meteoros, i)
+    end
+   end 
+end
+
 function criaMeteoro()
   meteoro = {
     x = math.random(LARGURA_TELA),
-    y = 0
+    y = -70,
+    peso = math.random(3),
+    deslocamento_horizontal = math.random(-1,1)
   }
   table.insert(meteoros, meteoro)
 end
 
 function moveMeteoros()
   for k, v in pairs(meteoros) do
-    meteoro.y = meteoro.y + 1
+    meteoro.y = meteoro.y + meteoro.peso
+    meteoro.x = meteoro.x + meteoro.deslocamento_horizontal
   end
 end
 
@@ -45,6 +57,8 @@ function love.load()
   love.window.setMode(LARGURA_TELA, ALTURA_TELA, {resizable = false})
   love.window.setTitle("14bis vs Meteoros")
 
+  math.randomseed(os.time()) 
+
   background = love.graphics.newImage("imagens/background.png")
 
   aviao_14bis.imagem = love.graphics.newImage(aviao_14bis.src)
@@ -57,8 +71,11 @@ function love.update(dt)
     if love.keyboard.isDown('w','a','s','d') then
       move14bis()
     end
-
+   
+   if #meteoros < MAX_METEOROS then
     criaMeteoro()
+   end 
+   
     moveMeteoros()
 end
 
