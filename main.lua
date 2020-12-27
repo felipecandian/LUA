@@ -9,6 +9,22 @@ aviao_14bis = {
   y = ALTURA_TELA - 64/2
 }
 
+meteoros = {}
+
+function criaMeteoro()
+  meteoro = {
+    x = math.random(LARGURA_TELA),
+    y = 0
+  }
+  table.insert(meteoros, meteoro)
+end
+
+function moveMeteoros()
+  for k, v in pairs(meteoros) do
+    meteoro.y = meteoro.y + 1
+  end
+end
+
 function move14bis()
   if love.keyboard.isDown('w') then
       aviao_14bis.y = aviao_14bis.y-1
@@ -33,6 +49,7 @@ function love.load()
 
   aviao_14bis.imagem = love.graphics.newImage(aviao_14bis.src)
    
+   meteoro_img = love.graphics.newImage("imagens/meteoro.png")
 end
  
 -- Increase the size of the rectangle every frame.
@@ -40,6 +57,9 @@ function love.update(dt)
     if love.keyboard.isDown('w','a','s','d') then
       move14bis()
     end
+
+    criaMeteoro()
+    moveMeteoros()
 end
 
 function love.draw()
@@ -47,4 +67,8 @@ function love.draw()
     love.graphics.draw(background, 0,0)
 
     love.graphics.draw(aviao_14bis.imagem,aviao_14bis.x, aviao_14bis.y)
+
+    for k,meteoro in pairs(meteoros) do
+      love.graphics.draw(meteoro_img, meteoro.x, meteoro.y)
+    end
 end
