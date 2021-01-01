@@ -1,4 +1,4 @@
---Iniciando o jogo Salvo
+--Iniciando o jogo 
 LARGURA_TELA = 320
 ALTURA_TELA = 480
 MAX_METEOROS = 12
@@ -16,6 +16,8 @@ aviao_14bis = {
 meteoros = {}
 
 function daTiro()
+
+  disparo:play()
   local tiro = {
     x = aviao_14bis.x + aviao_14bis.largura/2,
     y = aviao_14bis.y,
@@ -96,8 +98,7 @@ function trocaMusicaDeFundo()
   game_over:play()
 end
 
-
-function checaColisoes()
+function checaColisaoComAviao()
     for k, meteoro in pairs(meteoros) do
         if temColisao(meteoro.x, meteoro.y, meteoro.largura, meteoro.altura, 
                         aviao_14bis.x, aviao_14bis.y, aviao_14bis.largura, aviao_14bis.altura) then
@@ -108,6 +109,23 @@ function checaColisoes()
     end
 end
 
+function checaColisaoComTiros()
+    for i = #aviao_14bis.tiros, 1, -1 do
+      for j = #meteoros, 1, -1 do
+        if temColisao(aviao_14bis.tiros[i].x,aviao_14bis.tiros[i].y,                aviao_14bis.tiros[i].largura, aviao_14bis.tiros[i].altura,        meteoros[j].x, meteoros[j].y, meteoros[j].largura, meteoros[j].altura) then 
+        table.remove(aviao_14bis.tiros, i)
+        table.remove(meteoros, j)
+        break
+        end
+      end
+    end
+end
+
+function checaColisoes()
+    checaColisaoComAviao()
+    checaColisaoComTiros()
+end
+
 function love.load()
     love.window.setMode(LARGURA_TELA, ALTURA_TELA, {resizable = false})
     love.window.setTitle("14bis vs Meteoros")
@@ -115,6 +133,7 @@ function love.load()
     math.randomseed(os.time())
 
     background = love.graphics.newImage("imagens/background.png")
+    gameover_img = love.graphics.newImage("imagens/gameover.png")
     aviao_14bis.imagem = love.graphics.newImage(aviao_14bis.src)
     meteoro_img = love.graphics.newImage("imagens/meteoro.png")
     tiro_img = love.graphics.newImage("imagens/tiro.png")
@@ -126,6 +145,7 @@ function love.load()
 
     destruicao = love.audio.newSource("audios/destruicao.wav", "static")
      game_over = love.audio.newSource("audios/game_over.wav", "static")
+     disparo = love.audio.newSource("audios/disparo.wav", "static")
 end
 
 function love.update(dt)
@@ -163,6 +183,10 @@ function love.draw()
 
     for k, tiro in pairs(aviao_14bis.tiros) do
         love.graphics.draw(tiro_img, tiro.x, tiro.y) 
+    end
+
+    if FIM_JOGO then
+        love.graphics.draw(gameover_img, LARGURA_TELA/2 - gameover_img:getWidth()/2, ALTURA_TELA/2 - gameover_img:getHeight()/2)
     end
 
 end
