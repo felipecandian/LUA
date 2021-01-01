@@ -1,4 +1,4 @@
---Iniciando o jogo
+--Iniciando o jogo Salvo
 LARGURA_TELA = 320
 ALTURA_TELA = 480
 MAX_METEOROS = 12
