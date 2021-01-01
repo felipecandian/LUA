@@ -8,10 +8,31 @@ aviao_14bis = {
     largura = 55,
     altura = 63,
     x = LARGURA_TELA/2 - 64/2,
-    y = ALTURA_TELA - 64/2
+    y = ALTURA_TELA - 64/2,
+    tiros = {}
 }
 
 meteoros = {}
+
+function daTiro()
+  local tiro = {
+    x = aviao_14bis.x + aviao_14bis.largura/2,
+    y = aviao_14bis.y,
+    largura = 16,
+    altura = 16
+  }
+  teble.insert(aviao_14bis.tiros, tiro)
+end
+
+function moveTiros()
+  for i = #aviao_14bis.tiros, 1,-1 do
+    if aviao_14bis.tiros[i].y > 0 then
+      aviao_14bis.tiros[i].y = aviao_14bis.tiros[i].y -1
+    else
+     table.remove(aviao_14bis.tiros, i)
+    end
+  end
+end
 
 function destroiAviao()
     destruicao:play()
@@ -117,11 +138,18 @@ function love.update(dt)
             criaMeteoro()
         end
         moveMeteoros()
+        moveTiros()
         checaColisoes()
     end
 end
 
 function love.keypressed(tecla)
+  if tecla == "escape" then
+    love.event.quit()
+  elseif tecla == "space" then
+    daTiro()
+  end
+end
 
 function love.draw()
     love.graphics.draw(background, 0, 0)
@@ -130,4 +158,10 @@ function love.draw()
     for k, meteoro in pairs(meteoros) do
         love.graphics.draw(meteoro_img, meteoro.x, meteoro.y) 
     end
+
+
+    for k, tiro in pairs(aviao_14bis.tiros) do
+        love.graphics.draw(tiro_img, tiro.x, tiro.y) 
+    end
+
 end
