@@ -3,6 +3,7 @@ ALTURA_TELA = 480
 MAX_METEOROS = 12
 FIM_JOGO = false
 METEOROS_ATINGIDOS = 0
+NUMERO_METEOROS_OBJETIVO = 10
 
 aviao_14bis = {
     src = "imagens/14bis.png",
@@ -130,7 +131,7 @@ function checaColisoes()
 end
 
 function checaObjetivoConcluido()
-  if METEOROS_ATINGIDOS >= 10 then
+  if METEOROS_ATINGIDOS >= NUMERO_METEOROS_OBJETIVO then
     musica_ambiente:stop()
     VENCEDOR = true
     vencedor_som:play()
@@ -190,6 +191,8 @@ end
 function love.draw()
     love.graphics.draw(background, 0, 0)
     love.graphics.draw(aviao_14bis.imagem, aviao_14bis.x, aviao_14bis.y)
+
+    love.graphics.print("Meteoros restantes "..NUMERO_METEOROS_OBJETIVO - METEOROS_ATINGIDOS,0,0)
     
     for k, meteoro in pairs(meteoros) do
         love.graphics.draw(meteoro_img, meteoro.x, meteoro.y) 
